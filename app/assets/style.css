@@ -1,0 +1,71 @@
+.bb {
+  margin-bottom: 1px;
+}
+.bb:hover {
+  color: theme("colors.primary");
+  border-bottom: 1px solid theme("colors.primary");
+}
+
+:root {
+  --primary: theme("colors.primary") !important;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("~/assets/font/Poppins/Poppins-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("~/assets/font/Poppins/Poppins-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Popping-Bold";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("~/assets/font/Poppins/Poppins-Bold.ttf") format("truetype");
+}
+
+* {
+  font-family: "Poppins", Inter, system-ui, sans-serif;
+  font-size: 15px;
+}
+
+.font-bold,
+.font-bolder {
+  font-family: "Popping-Bold" !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+.authentication-inner {
+  max-width: 850px; /* Adjust this value (e.g., 650px) to your desired width */
+  width: 100%;
+}
+.menu-icon {
+  @apply flex items-center justify-center text-[18px] leading-none;
+}
+section.mg {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+@media (max-width: 769px) {
+  section.mg {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  * {
+    font-size: 13px;
+  }
+}
