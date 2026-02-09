@@ -8,14 +8,7 @@ export default defineNuxtConfig({
     "@/assets/style.css",
     "@/assets/css/bundle.css",
   ],
-  modules: [
-    "@nuxtjs/tailwindcss",
-    "@primevue/nuxt-module",
-    "@nuxt/image",
-    "@pinia/nuxt",
-    "pinia-plugin-persistedstate/nuxt",
-    "nuxt-qrcode"
-  ],
+  modules: ["@nuxtjs/tailwindcss", "@primevue/nuxt-module"],
   primevue: {
     options: {
       theme: {
@@ -28,29 +21,4 @@ export default defineNuxtConfig({
       },
     },
   },
-  runtimeConfig: {
-    public: {
-      apiUrl: process.env.API_URL!,
-      businessApiUrl: process.env.BUSINESS_API_URL!,
-      reviewApiUrl: process.env.REVIEW_API_URL!,
-      QR_API_BASE: "https://api.qrserver.com/v1/create-qr-code/",
-      QR_SIZE: "400x400", 
-    },
-  },
-  // routeRules: {
-  //   "/business/**": {
-  //     appMiddleware: ["businessauth"],
-  //   },
-  //   "/end-user/**": {
-  //     appMiddleware: ["userauth"],
-  //   },
-  // },
-  // nitro: {
-  //   devProxy : {
-  //     '/api/' : {
-  //       target: 'http://aerglotechnology.com',
-  //       changeOrigin : true
-  //     }
-  //   }
-  // }
 });

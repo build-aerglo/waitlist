@@ -1,179 +1,500 @@
 <template>
-  <!--Header-->
-  <NavBar />
-  <!--Header-->
-
-  <!--First Section Start-->
-  <section id="hero"
-    class="relative flex flex-col items-center justify-center text-center min-h-[80vh] py-6">
-    <!-- Background image div with loading state -->
-    <div 
-      class="absolute inset-0 bg-cover bg-top brightness-75 md:bg-fixed transition-opacity duration-500"
-      :class="imageLoaded ? 'opacity-100' : 'opacity-0'"
-      :style="imageLoaded ? `background-image: url('/images/background/e-user-ldg.png');` : ''"
-    ></div>
-    
-    <!-- Fallback background color while image loads -->
-    <div 
-      class="absolute inset-0 bg-gradient-to-br from-slate-600 via-slate-500 to-slate-700 transition-opacity duration-500"
-      :class="imageLoaded ? 'opacity-0' : 'opacity-100'"
-    ></div>
-    
-    <div class="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
-    
-    <!-- Beginning content -->
-    <div class="relative z-10 max-w-3xl font-sans">
-      <h1 class="font-bold text-white drop-shadow-lg mb-0
-                text-2xl
-                sm:text-2xl
-                md:text-3xl
-                lg:text-4xl">
-        Let real experiences guide you
-      </h1>
-
-      <p class="mt-1 text-[#008253]
-                text-base
-                sm:text-lg
-                md:text-xl">
-        Clear reviews. Confident decisions.
-      </p>
-    </div>
-
-    <SearchBarHome />
-  </section>
-  <!--First Section Ends-->
-
-  <!--Second Section begins-->
-  <section class="bg-white pb-10 pt-5">
-    <div class="container mx-auto px-4">
-      <!-- Header -->
-      <div class="relative mb-2">
-        <h2 class="text-xl md:text-2xl font-demibold text-left text-gray-700 dark:text-white">
-          Categories
-        </h2>
-        <a href="/end-user/landing/categories"
-          class="absolute right-0 top-1/2 -translate-y-1/2 text-2xl text-blue-600 hover:text-gray-900 dark:text-gray-300">
-          ...
-        </a>
+  <div
+    class="min-h-screen relative overflow-hidden py-5 md:py-0
+           bg-gradient-to-br from-green-100/60 via-transparent to-yellow-100/50"
+  >
+    <!-- ================= PRELOADER ================= -->
+    <Transition name="fade">
+      <div
+        v-if="loading"
+        class="absolute inset-0 z-50 flex items-center justify-center bg-green-50"
+      >
+        <GeneralLoader />
       </div>
-      <LandingCategories />
+    </Transition>
+
+    <!-- ================= DECORATIONS ================= -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div
+        v-for="n in 3"
+        :key="'orb' + n"
+        class="absolute rounded-full bg-yellow-100 opacity-40 blur-3xl animate-float-slow"
+        :style="randomOrbStyle()"
+      />
+
+      <i
+        v-for="n in 12"
+        :key="'star' + n"
+        class="pi pi-star-fill absolute text-yellow-400 opacity-70 animate-float"
+        :style="randomStarStyle()"
+      />
     </div>
-  </section>
-  <!--Second Section ends-->
 
-  <!--Third Section Starts-->
-  <section >
-    <TopReviewed />
-  </section>
-  <!--Third Section Ends-->
+    <!-- ================= CONTENT ================= -->
+    <Transition name="content-fade" appear>
+      <div
+        v-if="!loading"
+        class="relative z-10 min-h-screen flex items-center justify-center"
+      >
+        <div class="relative max-w-3xl w-full px-6 text-center space-y-8">
 
-  <!--Call to Action Section-->
-  <section class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 px-6 md:px-8">
-      <div class="container mx-auto px-6 text-center">
-          <h2 class="text-lg md:text-xl font-semibold text-slate-900">
-            Ready to expand your brand?
-          </h2>
-          <p class="text-slate-600 mt-2">
-            Boost credibility with authentic reviews.
+          <!-- Logo -->
+          <div class="flex justify-center md:justify-start">
+            <img
+              src="~/assets/images/e-user-logo.png"
+              alt="Logo"
+              class="h-10 "
+            />
+          </div>
+
+          <!-- Heading -->
+          <h1 class="text-2xl md:text-4xl font-semibold leading-tight gradient-text animate-gradient">
+            Let real experiences guide you
+          </h1>
+
+          <p class="text-green-700 max-w-xl md:text-base text-sm mx-auto leading-relaxed">
+            Real reviews from real people. Build trust, choose smarter, and grow with confidence.
+            We're launching soon — join the waitlist.
           </p>
-          <div class="flex justify-center space-x-4">
-          <NuxtLink to="/business/landing">
-          <button
-          class="px-6 py-3 rounded-xl bg-slate-900 text-white font-medium
-                hover:opacity-90 transition"
-          >
-            Get Started
-          </button>
-        </NuxtLink>
+
+          <!-- ================= ROLE SELECTION ================= -->
+          <div class="pt">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-2xl mx-auto">
+
+              <!-- Business Card -->
+              <button
+                @click="selectedRole = 'business'"
+                :class="[
+                  baseCardClass,
+                  selectedRole === 'business'
+                    ? activeCardClass
+                    : inactiveCardClass
+                ]"
+              >
+                <div class="flex gap-4 items-start">
+                <i class="pi pi-briefcase md:text-3xl text-2xl text-yellow-700"></i>
+                  <div class="space-y-2">
+                    <span class="font-medium text-green-900 md:text-lg text-base">
+                      Business
+                    </span>
+                    <p class="md:text-sm text-xs text-green-700">
+                      Collect authentic reviews, build lasting trust,
+                      and turn happy customers into your strongest marketing channel.
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              <!-- Customer Card -->
+              <button
+                @click="selectedRole = 'user'"
+                :class="[
+                  baseCardClass,
+                  selectedRole === 'user'
+                    ? activeCardClass
+                    : inactiveCardClass
+                ]"
+              >
+                <div class="flex gap-4 items-start">
+                  <i class="pi pi-user md:text-3xl text-2xl text-yellow-600"></i>
+                  <div class="space-y-2">
+                    <span class="font-medium text-green-900 md:text-lg text-base">
+                      Customer
+                    </span>
+                    <p class="md:text-sm text-xs text-green-700">
+                      Discover trusted businesses, read honest experiences,
+                      and make decisions you actually feel confident about.
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- ================= CTA ================= -->
+          <div class="flex flex-col items-center md:pt-6 pt-3 gap-3">
+            <button
+              :disabled="!selectedRole"
+              @click="joinWaitlist"
+              class="bg-green-700 text-yellow-200 md:px-12 px-8 py-4 rounded-full text-base md:text-lg
+                     flex items-center gap-2 shadow-md transition
+                     hover:bg-green-800 hover:scale-105
+                     disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              Join the waitlist
+              <i class="pi pi-arrow-right"></i>
+            </button>
+
+            <!-- Social Proof -->
+            <p class="text-sm text-green-700 flex items-center gap-2">
+              <i class="pi pi-users text-green-600"></i>
+              <span>
+                <strong>{{ waitlistCount.toLocaleString() }}</strong>
+                people already joined
+              </span>
+            </p>
+          </div>
+
+            <!-- ================= COUNTDOWN ================= -->
+            <div class="">
+            <div
+                v-if="!timeLeft.expired"
+                class="flex justify-center gap-2 md:gap-6 px-5"
+            >
+                <!-- Days -->
+                <div class="countdown-card">
+                <span class="countdown-number">
+                    {{ pad(timeLeft.days) }}
+                </span>
+                <span class="countdown-label">Days</span>
+                </div>
+
+                <!-- Hours -->
+                <div class="countdown-card">
+                <span class="countdown-number">
+                    {{ pad(timeLeft.hours) }}
+                </span>
+                <span class="countdown-label">Hours</span>
+                </div>
+
+                <!-- Minutes -->
+                <div class="countdown-card">
+                <span class="countdown-number">
+                    {{ pad(timeLeft.minutes) }}
+                </span>
+                <span class="countdown-label">Minutes</span>
+                </div>
+
+                <!-- Seconds -->
+                <div class="countdown-card">
+                <span class="countdown-number">
+                    {{ pad(timeLeft.seconds) }}
+                </span>
+                <span class="countdown-label">Seconds</span>
+                </div>
+            </div>
+
+            <div v-else class="text-yellow-600 font-semibold text-xl text-center">
+                🎉 We're live!
+            </div>
+            </div>
+
+          <!-- ================= WHY JOIN EARLY ================= -->
+          <div class="max-w-2xl mx-auto pt-8">
+            <h2 class="text-xl md:text-2xl font-semibold text-green-900 mb-6">
+              Why Join Early?
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4 text-left">
+              <!-- Early Access -->
+              <div class="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-green-100 shadow-sm hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <i class="pi pi-bolt text-yellow-600 text-xl mt-1"></i>
+                  <div>
+                    <h6 class="font-semibold text-green-900 mb-2">Early Access</h6>
+                    <p class="text-sm text-green-700">
+                      Be the first to experience CleReview before the public launch. Get early access to all premium features.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Exclusive Perks -->
+              <div class="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-green-100 shadow-sm hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <i class="pi pi-star text-yellow-600 text-xl mt-1"></i>
+                  <div>
+                    <h6 class="font-semibold text-green-900 mb-2">Exclusive Perks</h6>
+                    <p class="text-sm text-green-700">
+                      Enjoy discounts, special badges, and exclusive features reserved only for founding members.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Free Business Setup -->
+              <div class="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-green-100 shadow-sm hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <i class="pi pi-gift text-yellow-600 text-xl mt-1"></i>
+                  <div>
+                    <h6 class="font-semibold text-green-900 mb-2">Free Business Setup</h6>
+                    <p class="text-sm text-green-700">
+                      Get help with profile setup, in-store review invites and any other business specifics.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Shape the Future -->
+              <div class="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-green-100 shadow-sm hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <i class="pi pi-megaphone text-yellow-600 text-xl mt-1"></i>
+                  <div>
+                    <h6 class="font-semibold text-green-900 mb-2">Shape the Future</h6>
+                    <p class="text-sm text-green-700">
+                      Your feedback will directly influence the product. Help us build the review platform you've always wanted.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= SOCIALS ================= -->
+          <div class="flex justify-center items-center gap-6 text-2xl text-green-700">
+            <i class="pi pi-twitter hover:text-green-900 transition cursor-pointer"></i>
+            <a href="https://www.instagram.com/cle_review/" target="_blank" rel="noopener noreferrer">
+              <i class="pi pi-instagram hover:text-green-900 transition cursor-pointer"></i>
+            </a>
+            <i class="pi pi-facebook hover:text-green-900 transition cursor-pointer"></i>
+            <i class="pi pi-at hover:text-green-900 transition cursor-pointer"></i>
+          </div>
+
         </div>
       </div>
-  </section>
-
-  <!--Fourth Section Begins-->
-  <section class="my-0">
-    <ReviewSlider />
-  </section>
-  <!--Fourth Section Ends-->
-
-  <!--Fifth Section begins-->
-  <section id="add-voice" class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 mb-0">
-    <div class="container mx-auto px-6 text-center">
-      <h2 class="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white mb-6">
-        Add Your Voice
-      </h2>
-      <p class="text-gray-800 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-        Become part of a growing network of individuals who value transparency and trust. By joining our platform, you
-        contribute to shaping authentic conversations, helping others make informed choices while discovering new and
-        better experiences every day.
-      </p>
-      <div class="flex justify-center space-x-4">
-        <button 
-          @click="showGeneralAuth = true"
-          class="flex items-center space-x-2 bg-slate-900 hover:opacity-90 text-white px-6 py-3 rounded-xl transition-all duration-300"
-        >
-          <span>Login/Register</span>
-        </button>
-      </div>
-
-      <Teleport to="body">
-        <AuthUnifiedModal 
-          v-if="showGeneralAuth" 
-          :hide-back-to-review="true"
-          @close="showGeneralAuth = false" 
-          @authenticated="handleGeneralAuthSuccess"
-        />
-      </Teleport>
-    </div>
-  </section>
-  <!--Fifth Section Ends-->
-
-  <!--Footer-->
-  <NavFooter />
-  <!--Footer-->
-
+    </Transition>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '~/store/user'
-const router = useRouter()
-const userStore = useUserStore()
-const imageLoaded = ref<boolean>(false);
-const toast = useToast()
-onMounted((): void => {
-  // Preload the background image
-  const img: HTMLImageElement = new Image();
-  img.src = '/images/background/e-user-ldg.png';
-  
-  img.onload = (): void => {
-    imageLoaded.value = true;
-  };
-  
-  // If image is already cached, it loads instantly
-  if (img.complete) {
-    imageLoaded.value = true;
-  }
+import { ref, reactive, onMounted, onUnmounted } from "vue";
+
+const loading = ref(true);
+const selectedRole = ref<"business" | "user" | null>(null);
+
+// Fake preload delay
+onMounted(() => {
+  setTimeout(() => {
+    loading.value = false;
+  }, 1200);
 });
-const isReviewModalOpen = ref(false)
 
-// Watch for the login event
-watch(() => userStore.isAuthenticated, (isLoggedIn) => {
-  if (isLoggedIn) {
-    // Check if there is a pending draft in localStorage or your store
-    const hasDraft = localStorage.getItem('review_draft')
-    
-    if (hasDraft) {
-      // Automatically open the modal
-      isReviewModalOpen.value = true;
-      
-      // Optional: Small toast notification
-      // toast.success("Welcome back! You can now finish your review.")
-    }
+/* ================= WAITLIST COUNT =================
+   Replace this later with a real API call.
+*/
+const waitlistCount = ref(142);
+
+/* ================= JOIN HANDLER ================= */
+const joinWaitlist = () => {
+  if (selectedRole.value === "business") {
+    window.open("https://docs.google.com/forms/d/e/1FAIpQLSfuiebV9xUOC10BUrDayfgER6DhM2_k40HVilovAd-fOxdFcg/viewform?usp=publish-editor", "_blank");
   }
-})
-const showGeneralAuth = ref(false)
+  if (selectedRole.value === "user") {
+    window.open("https://docs.google.com/forms/d/e/1FAIpQLSeyRSBmn8WMh2pzaUMVQWUscGaef0qvJSEYtx0S_YKj5CsZmA/viewform?usp=publish-editor", "_blank");
+  }
+};
 
-const handleGeneralAuthSuccess = () => {
-  showGeneralAuth.value = false;  
-  toast.add({ severity: 'success', summary: 'Welcome!', detail: 'You are now logged in.', life: 3000 })
-}
+/* ================= COUNTDOWN ================= */
+const target = new Date("2026-03-15T23:59:59");
+
+const timeLeft = reactive({
+  days: 0,
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+  expired: false,
+});
+
+let timer: ReturnType<typeof setInterval>;
+
+const calculate = () => {
+  const diff = target.getTime() - Date.now();
+  if (diff <= 0) {
+    timeLeft.expired = true;
+    clearInterval(timer);
+    return;
+  }
+  timeLeft.days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  timeLeft.hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  timeLeft.minutes = Math.floor((diff / (1000 * 60)) % 60);
+  timeLeft.seconds = Math.floor((diff / 1000) % 60);
+};
+
+onMounted(() => {
+  calculate();
+  timer = setInterval(calculate, 1000);
+});
+
+onUnmounted(() => clearInterval(timer));
+
+/* ================= STYLES ================= */
+const baseCardClass =
+  "h-full text-left rounded-xl bg-white border-2 p-4 shadow-sm transition " +
+  "hover:-translate-y-1 hover:shadow-md";
+
+const activeCardClass =
+  "border-green-600 ring-2 ring-green-300 scale-[1.02]";
+
+const inactiveCardClass =
+  "border-green-100";
+
+/* ================= DECORATIONS ================= */
+const randomStarStyle = () => ({
+  top: Math.random() * 100 + "%",
+  left: Math.random() * 100 + "%",
+  fontSize: Math.random() * 14 + 10 + "px",
+  animationDuration: Math.random() * 8 + 6 + "s",
+});
+
+const randomOrbStyle = () => ({
+  top: Math.random() * 100 + "%",
+  left: Math.random() * 100 + "%",
+  width: Math.random() * 220 + 200 + "px",
+  height: Math.random() * 220 + 200 + "px",
+  animationDuration: Math.random() * 20 + 20 + "s",
+});
+
+const pad = (num: number) => String(num).padStart(2, "0");
 </script>
+
+<style scoped>
+/* ===== Preloader ===== */
+.loader {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #d1fae5;
+  border-top-color: #15803d;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== Animations ===== */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-35px); }
+}
+.animate-float { animation: float ease-in-out infinite; }
+.animate-float-slow { animation: floatSlow ease-in-out infinite; }
+
+/* ===== Gradient Text ===== */
+.gradient-text {
+  background: linear-gradient(90deg, #065f46, #16a34a, #eab308);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient {
+  animation: gradientMove 6s ease-in-out infinite;
+}
+
+/* ===== Transitions ===== */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.content-fade-enter-active {
+  transition: all 0.6s ease;
+}
+.content-fade-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.4s ease;
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* ===== Countdown Cards ===== */
+.countdown-card {
+  /* background: white; */
+  background: #ca8a04;;
+  border: 2px solid #d1fae5; /* green-100 */
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.5rem;
+  min-width: 72px;
+  text-align: center;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.countdown-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+}
+
+.countdown-number {
+  display: block;
+  font-size: 1.50rem;
+  font-weight: 700;
+  line-height: 1;
+  /* color: #ca8a04; */
+  color: white;
+}
+
+.countdown-label {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  /* color: #065f46; green-800 */
+  color: white;
+
+}
+@media screen and (max-width: 600px) {
+  .countdown-card {
+  /* background: white; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #ca8a04;;
+  border: 2px solid #d1fae5; /* green-100 */
+  border-radius: 0.75rem;
+  padding: 0.6rem .7rem;
+  min-width: 50px;
+  text-align: center;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+  .countdown-number {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+  /* color: #ca8a04; */
+  color: white;
+}
+
+.countdown-label {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.4rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  /* color: #065f46; green-800 */
+  color: white;
+
+}
+}
+
+</style>
