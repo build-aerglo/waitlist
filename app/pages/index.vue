@@ -130,7 +130,7 @@
             <p class="text-sm text-green-700 flex items-center gap-2">
               <i class="pi pi-users text-green-600"></i>
               <span>
-                <strong>{{ waitlistCount.toLocaleString() }}</strong>
+                <strong>{{ waitlistCount + counter }}</strong>
                 people already joined
               </span>
             </p>
@@ -259,6 +259,8 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, onUnmounted } from "vue";
+import { useCounter } from "~/composables/useCounter";
+const { counter, increment, fetchCounter } = useCounter()
 
 const loading = ref(true);
 const selectedRole = ref<"business" | "user" | null>(null);
@@ -283,6 +285,7 @@ const joinWaitlist = () => {
   if (selectedRole.value === "user") {
     window.open("https://docs.google.com/forms/d/e/1FAIpQLSeyRSBmn8WMh2pzaUMVQWUscGaef0qvJSEYtx0S_YKj5CsZmA/viewform?usp=publish-editor", "_blank");
   }
+  increment();
 };
 
 /* ================= COUNTDOWN ================= */
@@ -312,11 +315,14 @@ const calculate = () => {
 };
 
 onMounted(() => {
+  fetchCounter();
   calculate();
   timer = setInterval(calculate, 1000);
 });
 
 onUnmounted(() => clearInterval(timer));
+
+
 
 /* ================= STYLES ================= */
 const baseCardClass =
